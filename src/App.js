@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import Card from "./components/Card";
+import { v4 as uuidv4 } from "uuid";
 function App() {
 	const [deck, setDeck] = useState([]);
 	const color = useRef("red");
 	const symbol = useRef(["fab", "steam"]);
 	const random = useRef(0);
-	const [cardID, setCardID] = useState(0);
 	const [card, setCard] = useState({
 		color: "",
 		symbol: [],
 		value: "",
+		cardID: "",
 	});
 
 	useEffect(() => {
@@ -19,6 +20,7 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+		// eslint-disable-next-line
 		getCard();
 	}, []);
 
@@ -57,9 +59,8 @@ function App() {
 		return Math.floor(Math.random() * end) + start;
 	}
 
-	function generateSuit(color, symbol, suitID) {
+	function generateSuit(color, symbol) {
 		for (let i = 1; i <= 13; i++) {
-			setCardID();
 			let value = i;
 			if (i === 1) {
 				value = "A";
@@ -81,23 +82,24 @@ function App() {
 					cardColor: color,
 					symbol: symbol,
 					number: i,
-					cardID: cardID,
+					cardID: uuidv4(),
 				},
 			]);
 		}
 	}
 
 	function getCard(e) {
-		console.log("Clicked");
 		random.current = randomNumber(0, deck.length);
 		let thisCard = deck[random.current];
 		if (thisCard === undefined) return;
-		setDeck(deck.filter((removeCard) => removeCard.cardID !== deck.cardID));
 		setCard({
 			color: thisCard.cardColor,
 			value: thisCard.value,
 			symbol: thisCard.symbol,
+			cardID: thisCard.cardID,
 		});
+		console.log(card);
+		setDeck(deck.filter((removeCard) => removeCard.cardID !== thisCard.cardID));
 	}
 	//<Card value={"A"} symbol={["fab", "steam"]}></Card>
 	//<Card value={2} symbol={["fab", "discord"]} color={"#111"}></Card>
