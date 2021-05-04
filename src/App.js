@@ -120,7 +120,7 @@ function App() {
 					margin: "10px 15px",
 				}}
 			>
-				Blackjack
+				Blackjack Game
 			</h1>
 			<div onClick={getCard}>
 				<Card value={card.value} color={card.color} symbol={card.symbol}></Card>
