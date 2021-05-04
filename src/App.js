@@ -44,7 +44,7 @@ function App() {
 					margin: "10px 15px",
 				}}
 			>
-				Blackjack
+				Blackjack Game
 			</h1>
 			{deck.map((card) => (
 				<Card
