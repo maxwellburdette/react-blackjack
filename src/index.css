@@ -9,11 +9,23 @@
 
 .App {
 	width: 100%;
-	height: 100%;
+	min-height: 100vh;
+	background: linear-gradient(to right, #7b4397, #dc2430);
+	padding: 10px;
+	display: flex;
+	align-items: center;
+}
+.container {
+	position: relative;
+	width: 100%;
+	height: 95vh;
+	padding: 10px;
+	background: #fff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+	border-radius: 10px;
 }
 .cardContainer {
 	position: relative;
@@ -51,9 +63,6 @@
 	margin: 0 10px 10px 10px;
 }
 
-.cardContainer .smallSuite {
-}
-
 .cardContainer .left {
 	align-self: flex-start;
 	margin-left: 8px;
@@ -82,4 +91,36 @@
 	margin-bottom: 35px;
 	align-self: flex-end;
 	transform: rotate(180deg);
+}
+
+.hit {
+	font-size: 1.5em;
+	padding: 5px 40px;
+	bottom: 0;
+	right: 0;
+	margin: 40px;
+	border-radius: 15px;
+	position: absolute;
+	background: blue;
+	color: #fff;
+	text-decoration: none;
+	transition: 0.5s;
+}
+
+.stay {
+	font-size: 1.5em;
+	padding: 5px 40px;
+	bottom: 0;
+	left: 0;
+	margin: 40px;
+	border-radius: 15px;
+	position: absolute;
+	background: blue;
+	color: #fff;
+	text-decoration: none;
+	transition: 0.5s;
+}
+.hit:hover,
+.stay:hover {
+	filter: brightness(0.8);
 }
