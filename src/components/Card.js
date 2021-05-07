@@ -19,6 +19,7 @@ export default function Card(props) {
 					size="3x"
 				></FontAwesomeIcon>
 			</div>
+
 			<div className="largeSuit">
 				<FontAwesomeIcon
 					className="icon-bottom"
