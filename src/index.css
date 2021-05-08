@@ -26,6 +26,7 @@
 	justify-content: center;
 	flex-wrap: wrap;
 	border-radius: 10px;
+	overflow-y: auto;
 }
 .cardContainer {
 	position: relative;
@@ -100,8 +101,8 @@
 	right: 0;
 	margin: 40px;
 	border-radius: 15px;
-	position: absolute;
-	background: blue;
+	position: fixed;
+	background: #dc2430;
 	color: #fff;
 	text-decoration: none;
 	transition: 0.5s;
@@ -114,8 +115,8 @@
 	left: 0;
 	margin: 40px;
 	border-radius: 15px;
-	position: absolute;
-	background: blue;
+	position: fixed;
+	background: #7b4397;
 	color: #fff;
 	text-decoration: none;
 	transition: 0.5s;

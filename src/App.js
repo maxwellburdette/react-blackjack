@@ -1,66 +1,72 @@
 import React, { useState, useEffect, useRef } from "react";
 import Card from "./components/Card";
 import { v4 as uuidv4 } from "uuid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function App() {
 	const [deck, setDeck] = useState([]);
-	const color = useRef("red");
+	const color = useRef("#dc2430");
 	const symbol = useRef(["fab", "steam"]);
 	const random = useRef(0);
-	const [card, setCard] = useState({
-		color: "",
-		symbol: [],
-		value: "",
-		cardID: "",
-		number: 0,
-	});
-	const [card2, setCard2] = useState({
-		color: "",
-		symbol: [],
-		value: "",
-		cardID: "",
-		number: 0,
-	});
+	const [cards, setCard] = useState([]);
+	const [hand, setHand] = useState(0);
+	const [broke, setBroke] = useState(false);
+	const [perfect, setPerfect] = useState(false);
+	const [blackjack, setBlackjack] = useState(false);
 
 	useEffect(() => {
 		generateDeck();
 
 		// eslint-disable-next-line
 	}, []);
+	useEffect(() => {
+		if (cards.length === 0 || cards[0] === undefined) return;
+		let card = cards[cards.length - 1];
+
+		if (card.value === "A") {
+			if (hand + 11 <= 21) {
+				setHand((prevState) => prevState + 11);
+			} else {
+				setHand((prevState) => prevState + card.number);
+			}
+		} else {
+			setHand((prevState) => prevState + card.number);
+		}
+	}, [cards]);
 
 	useEffect(() => {
-		// eslint-disable-next-line
-		getCard();
-	}, []);
+		if (hand > 21) {
+			setBroke(!broke);
+		}
+		if (hand === 21) {
+			if (cards.length === 2) {
+				setBlackjack(true);
+				setPerfect(true);
+			} else {
+				setPerfect(true);
+			}
+		}
+	}, [hand]);
 
-	async function generateDeck() {
-		// for (let i = 1; i <= 52; i++) {
-		// 	setDeck((prevState) => [
-		// 		...prevState,
-		// 		{ value: i, cardColor: color.current, symbol: symbol.current },
-		// 	]);
-		// }
-
+	function generateDeck() {
 		//Generate first suit
 		generateSuit(color.current, symbol.current);
 
 		//Change references
-		color.current = "#111";
+		color.current = "#7b4397";
 		symbol.current = ["fab", "discord"];
 		//Generate second suit
 		generateSuit(color.current, symbol.current);
 
 		//Change references
-		color.current = "red";
+		color.current = "#dc2430";
 		symbol.current = ["fab", "battle-net"];
 		//Generate thrid suit
 		generateSuit(color.current, symbol.current);
 
 		//Change references
-		color.current = "#111";
+		color.current = "#7b4397";
 		symbol.current = ["fab", "windows"];
 		generateSuit(color.current, symbol.current);
-
-		//random.current = randomNumber(0, 51);
 	}
 
 	function randomNumber(start, end) {
@@ -100,49 +106,39 @@ function App() {
 		}
 	}
 
-	function getCard() {
+	function addCard() {
 		random.current = randomNumber(0, deck.length);
 		let thisCard = deck[random.current];
 		if (thisCard === undefined) return;
-		setCard({
-			color: thisCard.cardColor,
-			value: thisCard.value,
-			symbol: thisCard.symbol,
-			cardID: thisCard.cardID,
-			number: thisCard.number,
-		});
-		console.log(card);
+
+		if (hand === 21 || broke === true) {
+			return;
+		}
+
+		setCard((currentCard) => [
+			...currentCard,
+			{
+				color: thisCard.cardColor,
+				value: thisCard.value,
+				symbol: thisCard.symbol,
+				cardID: thisCard.cardID,
+				number: thisCard.number,
+			},
+		]);
+
 		setDeck(deck.filter((removeCard) => removeCard.cardID !== thisCard.cardID));
 	}
 
-	function getCard2() {
-		random.current = randomNumber(0, deck.length);
-		let thisCard = deck[random.current];
-		if (thisCard === undefined) return;
-		setCard2({
-			color: thisCard.cardColor,
-			value: thisCard.value,
-			symbol: thisCard.symbol,
-			cardID: thisCard.cardID,
-			number: thisCard.number,
-		});
-		console.log(card);
-		setDeck(deck.filter((removeCard) => removeCard.cardID !== thisCard.cardID));
-	}
-	function calcValue() {
-		if (card.value === "A") {
-			let checkVal = card2.number + 11;
-			if (checkVal <= 21) {
-				return checkVal;
-			}
-		}
-		if (card2.value === "A") {
-			let checkVal = card.number + 11;
-			if (checkVal <= 21) {
-				return checkVal;
-			}
-		}
-		return card.number + card2.number;
+	function reset() {
+		setCard([]);
+		setDeck([]);
+		color.current = "#dc2430";
+		setHand(0);
+		setBroke(false);
+		setPerfect(0);
+		setBlackjack(false);
+		symbol.current = ["fab", "steam"];
+		generateDeck();
 	}
 
 	return (
@@ -157,29 +153,80 @@ function App() {
 				>
 					Blackjack Game
 				</h1>
-				<div onClick={getCard}>
-					<Card
-						value={card.value}
-						color={card.color}
-						symbol={card.symbol}
-					></Card>
-				</div>
 
-				<div onClick={getCard2}>
-					<Card
-						value={card2.value}
-						color={card2.color}
-						symbol={card2.symbol}
-					></Card>
-				</div>
+				{cards
+					? cards.map((card) => (
+							<Card
+								value={card.value}
+								color={card.color}
+								symbol={card.symbol}
+								key={card.cardID}
+							></Card>
+					  ))
+					: ""}
 
-				{card && card2 ? <h1>{calcValue()}</h1> : ""}
+				{broke ? (
+					<h1
+						style={{
+							textAlign: "center",
+							position: "fixed",
+							bottom: "40px",
+							color: "white",
+							background: "linear-gradient(to right, #7b4397, #dc2430)",
+							width: "200px",
+							borderRadius: "10px",
+						}}
+					>
+						{hand} Bust
+					</h1>
+				) : (
+					<h1
+						style={{
+							textAlign: "center",
+							position: "fixed",
+							bottom: "40px",
+							color: "white",
+							background: "linear-gradient(to right, #7b4397, #dc2430)",
+							width: "100px",
+							borderRadius: "10px",
+						}}
+					>
+						{hand}
 
-				<a href="#" className="hit">
+						{perfect ? (
+							<FontAwesomeIcon
+								style={{ color: "white", fontSize: "1em" }}
+								icon={("fas", "check")}
+							></FontAwesomeIcon>
+						) : (
+							""
+						)}
+					</h1>
+				)}
+				{blackjack ? (
+					<h1
+						style={{
+							textAlign: "center",
+							position: "fixed",
+							top: "50px",
+							left: "50px",
+							color: "white",
+							background: "linear-gradient(to right, #7b4397, #dc2430)",
+							width: "200px",
+							borderRadius: "10px",
+						}}
+					>
+						Blackjack!
+					</h1>
+				) : (
+					""
+				)}
+
+				<a href="#" className="hit" onClick={addCard}>
 					Hit
 				</a>
 
-				<a href="#" className="stay">
+				<a href="#" className="stay" onClick={reset}>
 					Stay
 				</a>
 			</div>
